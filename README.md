@@ -23,8 +23,81 @@ veyev 结合 FFmpeg 强大的音视频处理能力，支持视频转码、剪辑
 
 ## 使用说明
 
-1. 下载 ffmpeg
-2. 使用 ffmpeg skills
+### 环境要求
+
+- Node.js 18+
+- npm 或 yarn
+
+### 安装步骤
+
+#### 1. 安装 opencode
+
+```bash
+# 使用 npm
+npm install -g opencode
+
+# 或使用 yarn
+yarn global add opencode
+```
+
+#### 2. 克隆项目
+
+```bash
+git clone https://gitee.com/realme_lee/veyev.git
+cd veyev
+```
+
+#### 3. 安装依赖
+
+```bash
+npm install
+# 或
+yarn
+```
+
+#### 4. 安装 FFmpeg
+
+在 opencode 中输入以下命令自动下载 FFmpeg：
+
+```
+下载 ffmpeg
+```
+
+或者手动下载：
+
+```bash
+# Linux
+wget https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz
+tar -xf ffmpeg-master-latest-linux64-gpl.tar.xz
+
+# macOS
+wget https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-macos64-gpl.tar.xz
+tar -xf ffmpeg-master-latest-macos64-gpl.tar.xz
+
+# Windows
+# 从 https://github.com/BtbN/FFmpeg-Builds/releases 下载 ffmpeg-master-latest-win64-gpl.zip
+```
+
+#### 5. 使用 FFmpeg Skills
+
+项目内置了 FFmpeg 技能，可以直接调用：
+
+```bash
+# 查看媒体信息
+./ffmpeg/bin/ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 input.mp4
+
+# 视频格式转换
+./ffmpeg/bin/ffmpeg -i input.mp4 -c:v libx264 -c:a aac output.mp4
+
+# 视频剪辑
+./ffmpeg/bin/ffmpeg -ss 00:00:10 -i input.mp4 -to 00:00:30 -c copy output.mp4
+
+# 提取音频
+./ffmpeg/bin/ffmpeg -i input.mp4 -q:a 0 -map a output.mp3
+
+# 视频压缩
+./ffmpeg/bin/ffmpeg -i input.mp4 -c:v libx264 -crf 23 -preset medium -c:a copy output.mp4
+```
 
 ## 参与贡献
 
