@@ -78,25 +78,50 @@ tar -xf ffmpeg-master-latest-macos64-gpl.tar.xz
 # 从 https://github.com/BtbN/FFmpeg-Builds/releases 下载 ffmpeg-master-latest-win64-gpl.zip
 ```
 
-#### 5. 使用 FFmpeg Skills
+### 快速演示
 
-项目内置了 FFmpeg 技能，可以直接调用：
+使用 `data/landing.mp4` 文件（8秒）演示常见操作：
+
+#### 1. 查看视频信息
 
 ```bash
-# 查看媒体信息
-./ffmpeg/bin/ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 input.mp4
+./ffmpeg/bin/ffprobe -v error -show_entries stream=codec_name,width,height,duration -of json data/landing.mp4
+```
 
-# 视频格式转换
-./ffmpeg/bin/ffmpeg -i input.mp4 -c:v libx264 -c:a aac output.mp4
+#### 2. 提取最后 3 秒
 
-# 视频剪辑
-./ffmpeg/bin/ffmpeg -ss 00:00:10 -i input.mp4 -to 00:00:30 -c copy output.mp4
+```bash
+./ffmpeg/bin/ffmpeg -ss 5 -i data/landing.mp4 -t 3 -c copy data/landing_last3s.mp4
+```
 
-# 提取音频
-./ffmpeg/bin/ffmpeg -i input.mp4 -q:a 0 -map a output.mp3
+#### 3. 提取最后 1 秒
 
-# 视频压缩
-./ffmpeg/bin/ffmpeg -i input.mp4 -c:v libx264 -crf 23 -preset medium -c:a copy output.mp4
+```bash
+./ffmpeg/bin/ffmpeg -ss 7 -i data/landing.mp4 -t 1 -c copy data/landing_last1s.mp4
+```
+
+#### 4. 提取音频
+
+```bash
+./ffmpeg/bin/ffmpeg -i data/landing.mp4 -q:a 0 -map a data/landing.mp3
+```
+
+#### 5. 视频转码 (H.264)
+
+```bash
+./ffmpeg/bin/ffmpeg -i data/landing.mp4 -c:v libx264 -c:a aac data/landing_h264.mp4
+```
+
+#### 6. 视频压缩
+
+```bash
+./ffmpeg/bin/ffmpeg -i data/landing.mp4 -c:v libx264 -crf 28 -preset fast -c:a copy data/landing_compressed.mp4
+```
+
+#### 7. 截图
+
+```bash
+./ffmpeg/bin/ffmpeg -i data/landing.mp4 -ss 00:00:02 -vframes 1 data/frame.jpg
 ```
 
 ## 参与贡献
