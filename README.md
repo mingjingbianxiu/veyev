@@ -37,7 +37,7 @@ veyev 结合 FFmpeg 强大的音视频处理能力，支持视频转码、剪辑
 npm install -g opencode-ai
 
 # 或使用 yarn
-yarn global add opencode
+yarn global add opencode-ai
 ```
 
 #### 2. 克隆项目
