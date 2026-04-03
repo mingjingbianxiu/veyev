@@ -126,6 +126,50 @@ tar -xf ffmpeg-master-latest-macos64-gpl.tar.xz
 
 ## 参与贡献
 
+## Docker 使用
+
+### 构建镜像
+
+```bash
+docker build -t cuda-env .
+```
+
+### 运行容器
+
+```bash
+# 交互式运行
+docker run -it --gpus all -p 2222:22 cuda-env
+
+# 后台运行
+docker run -d --gpus all -p 2222:22 --name mycuda cuda-env
+```
+
+### 查看公钥
+
+容器启动时自动打印公钥，也可以通过日志查看：
+
+```bash
+docker logs <container_id>
+```
+
+### SSH 登录
+
+```bash
+# 使用密码登录
+ssh user@localhost -p 2222
+# 密码: 123456
+
+# 使用私钥登录
+ssh -i /path/to/ssh_private_key user@localhost -p 2222
+```
+
+### 获取私钥
+
+私钥位于容器内的 `/output/ssh_private_key`，可使用 docker cp 导出：
+
+```bash
+docker cp <container_id>:/output/ssh_private_key ./
+
 1.  Fork 本仓库
 2.  新建 Feat_xxx 分支
 3.  提交代码
