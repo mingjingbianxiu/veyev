@@ -1,0 +1,49 @@
+FROM nvidia/cuda:12.1.1-base-ubuntu22.04
+
+LABEL org.opencontainers.image.name="veyev-cuda-ssh" \
+      org.opencontainers.image.description="A CUDA-enabled SSH server image based on Ubuntu 22.04" \
+      org.opencontainers.image.version="1.0" \
+      org.opencontainers.image.authors="mingjingbianxiu<mingjingbianxiu@qq.com>"
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN echo 'deb http://mirrors.ustc.edu.cn/ubuntu/ jammy main restricted universe multiverse\ndeb http://mirrors.ustc.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse\ndeb http://mirrors.ustc.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse\ndeb http://mirrors.ustc.edu.cn/ubuntu/ jammy-security main restricted universe multiverse' > /etc/apt/sources.list && \
+    apt-get update && apt-get install -y \
+    openssh-server \
+    curl \
+    git \
+    net-tools \
+    vim \
+    gcc \
+    make \
+    gdb \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir /var/run/sshd
+
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN npm config set registry https://registry.npmmirror.com && npm install -g opencode-ai
+
+RUN mkdir -p ~/.ssh /app_home && \
+    ssh-keyscan gitee.com >> ~/.ssh/known_hosts 2>/dev/null
+
+WORKDIR /app_home
+
+RUN echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config \
+    && echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config \
+    && echo 'root:123456' | chpasswd
+
+RUN ssh-keygen -t ed25519 -f /root/.ssh/id_ed25519 -N '' \
+    && cp /root/.ssh/id_ed25519.pub /root/.ssh/authorized_keys
+
+RUN mkdir -p /output && cp /root/.ssh/id_ed25519 /output/ssh_private_key
+
+RUN echo '#!/bin/bash\nexec /usr/sbin/sshd -D' > /start.sh \
+    && chmod +x /start.sh
+
+EXPOSE 22
+
+CMD ["/start.sh"]
